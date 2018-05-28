@@ -24,10 +24,11 @@ public:
 	Vector2 get(int i);
 	Vector2 getHead();
 	Vector2 getTail();
+	Direction getDirection();
 	bool isAlive();
 
 	void changeDirection(Direction d);
-	void makeMoveOnMap();
+	void makeMoveOnMap(bool printOnScreen);
 	void paintOnMap();
 };
 

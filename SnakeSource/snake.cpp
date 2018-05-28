@@ -47,6 +47,11 @@ Vector2 Snake::getTail()
 	return get(snake.size() - 1);
 }
 
+Direction Snake::getDirection()
+{
+	return dir;
+}
+
 bool Snake::isAlive()
 {
 	return !dead;
@@ -76,7 +81,7 @@ void Snake::changeDirection(Direction d)
 }
 
 // Updates the attached map, so the snake needs not to be repainted.
-void Snake::makeMoveOnMap()
+void Snake::makeMoveOnMap(bool printOnScreen)
 {
 	Vector2 nextSpot = getHead() + Movement::DirectionToVector2(dir);
 	Element nextElement = (Element)(habitat.get(nextSpot));
@@ -85,23 +90,23 @@ void Snake::makeMoveOnMap()
 		dead = true;
 	}
 	else if (nextElement == Element::CHERRY) {
-		habitat.addElement(nextSpot, Element::SNAKE_HEAD);
-		habitat.addElement(getHead(), Element::SNAKE_BODY);
+		habitat.addElement(nextSpot, Element::SNAKE_HEAD, printOnScreen);
+		habitat.addElement(getHead(), Element::SNAKE_BODY, printOnScreen);
 		makeMove(false);
 		habitat.increaseSnakeSizeByOne();
 
 		// Placing a new cherry.
-		habitat.putRandomCherry();
+		habitat.putRandomCherry(printOnScreen);
 	}
 	else
 	{
-		habitat.addElement(nextSpot, Element::SNAKE_HEAD);
-		habitat.addElement(getHead(), Element::SNAKE_BODY);
+		habitat.addElement(nextSpot, Element::SNAKE_HEAD, printOnScreen);
+		habitat.addElement(getHead(), Element::SNAKE_BODY, printOnScreen);
 		if (nextElement != Element::SNAKE_TAIL) {
-			habitat.addElement(getTail(), Element::EMPTY);
+			habitat.addElement(getTail(), Element::EMPTY, printOnScreen);
 		}
 		makeMove(true);
-		habitat.addElement(getTail(), Element::SNAKE_TAIL);
+		habitat.addElement(getTail(), Element::SNAKE_TAIL, printOnScreen);
 	}
 }
 
@@ -117,6 +122,6 @@ void Snake::paintOnMap()
 			e = Element::SNAKE_TAIL;
 		}
 
-		habitat.addElement(snake[i].getX(), snake[i].getY(), e);
+		habitat.addElement(snake[i].getX(), snake[i].getY(), e, false);
 	}
 }

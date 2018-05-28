@@ -5,6 +5,16 @@ const char Movement::right = 'd';
 const char Movement::down = 's';
 const char Movement::left = 'a';
 
+bool Movement::isMovement(char c)
+{
+	if(c == Movement::up || c == Movement::right ||
+		c == Movement::down || c == Movement::left)
+	{
+		return true;
+	}
+	return false;
+}
+
 Direction Movement::CharToDirection(char c)
 {
 	switch (c) {
