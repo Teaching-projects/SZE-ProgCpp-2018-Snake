@@ -1,5 +1,37 @@
 #include "map.hpp"
 
+#ifdef __linux__
+void ChangeColor(Element e)
+{
+	switch(e){
+	case Element::WALL:
+		ChangeTrueColor(40, 40, 180);
+		break;
+	case Element::SNAKE_HEAD:
+		ChangeTrueColor(0, 180, 40);
+		break;
+	case Element::SNAKE_BODY:
+		ChangeTrueColor(0, 140, 30);
+		break;
+	case Element::SNAKE_TAIL:
+		ChangeTrueColor(80, 140, 20);
+		break;
+	case Element::CHERRY:
+		ChangeTrueColor(240, 20, 20);
+		break;
+	default:
+		break;
+	}
+}
+#elif _WIN32
+void ChangeColor(Element e)
+{
+	std::cout << "Not implemented exception." << std::endl;
+}
+#else
+void ChangeColor(Element e) {}
+#endif
+
 bool isSnake(Element e)
 {
 	if (e == Element::SNAKE_TAIL || e == Element::SNAKE_BODY || e == Element::SNAKE_HEAD) {
@@ -10,8 +42,12 @@ bool isSnake(Element e)
 
 // If the snake is too big, finding a free spot is hard randomly.
 // Different handling in this case is desired.
-void Map::putRandomCherryBigSnake()
+void Map::putRandomCherryBigSnake(bool printOnScreen)
 {
+	if(countEmpty() <= 0){
+		return;
+	}
+
 	std::vector<int> xVector;
 	std::vector<std::vector<int>> yVector;
 
@@ -37,7 +73,7 @@ void Map::putRandomCherryBigSnake()
 	std::uniform_int_distribution<uint32_t> yDist(0, yVector[rx].size() - 1);
 	int ry = yDist(rng);
 
-	addElement(xVector[rx], yVector[rx][ry], Element::CHERRY);
+	addElement(xVector[rx], yVector[rx][ry], Element::CHERRY, printOnScreen);
 }
 
 Map::Map(int n, int m) : x(n), y(m)
@@ -75,6 +111,11 @@ char Map::get(Vector2 v)
 	return get(v.getX(), v.getY());
 }
 
+int Map::countEmpty()
+{
+	return x * y - wallCount - snakeSize;
+}
+
 void Map::clearMap()
 {
 	for (int i = 0; i < x; i++) {
@@ -110,19 +151,23 @@ void Map::increaseSnakeSizeByOne()
 	snakeSize++;
 }
 
-void Map::addElement(int i, int j, Element e)
+void Map::addElement(int i, int j, Element e, bool printOnScreen)
 {
 	if (i >= 0 && i < x && j >= 0 && j < y) {
 		map[i][j] = (char)e;
+	
+		if(printOnScreen){
+			printElement(i, j);
+		}
 	}
 }
 
-void Map::addElement(Vector2 v, Element e)
+void Map::addElement(Vector2 v, Element e, bool printOnScreen)
 {
-	addElement(v.getX(), v.getY(), e);
+	addElement(v.getX(), v.getY(), e, printOnScreen);
 }
 
-void Map::putRandomCherry()
+void Map::putRandomCherry(bool printOnScreen)
 {
 	float magicNumber = .35f;
 	uint32_t seed = (uint32_t)time(0);
@@ -138,10 +183,36 @@ void Map::putRandomCherry()
 			ry = yDist(rng);
 		} while (map[rx][ry] != (char)Element::EMPTY);
 
-		addElement(rx, ry, Element::CHERRY);
+		addElement(rx, ry, Element::CHERRY, printOnScreen);
 	}
 	else {
-		putRandomCherryBigSnake();
+		putRandomCherryBigSnake(printOnScreen);
+	}
+}
+
+
+void Map::printElement(int i, int j)
+{
+	ChangeColor((Element)map[i][j]);
+	CursorToPosition(i, j);
+	std::cout << map[i][j];
+	ResetText();
+	CursorToPosition(x, y);
+	std::cout.flush();
+}
+
+void Map::printElement(Vector2 v){
+	printElement(v.getX(), v.getY());
+}
+
+void Map::print()
+{
+	for (int i = 0; i < x; i++){
+		for (int j = 0; j < y; j++){
+			if(map[i][j] != (char)Element::EMPTY){
+				printElement(i, j);
+			}
+		}
 	}
 }
 

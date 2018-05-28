@@ -8,6 +8,10 @@
 
 #include "vector2.hpp"
 
+#ifdef __linux__
+#include "linuxterminalhandler.hpp"
+
+#endif
 /*
 #define MAP_EMPTY ' '
 #define MAP_WALL 'X'
@@ -27,6 +31,9 @@ enum class Element : char {
 	NONE
 };
 
+// todo: move this to a different file?!
+void ChangeColor(Element e);
+
 bool isSnake(Element e);
 
 class Map {
@@ -35,19 +42,23 @@ class Map {
 	int wallCount;
 	int snakeSize;
 	std::mt19937 rng;
-	void putRandomCherryBigSnake();
+	void putRandomCherryBigSnake(bool printOnScreen);
 public:
 	Map(int n, int m);
 	~Map();
 	char get(int i, int j);
 	char get(Vector2 v);
+	int countEmpty();
 	void clearMap();
 	void createBorder(int edge);
 	void createBorder();
 	void increaseSnakeSizeByOne();
-	void addElement(int i, int j, Element e);
-	void addElement(Vector2 v, Element e);
-	void putRandomCherry();
+	void addElement(int i, int j, Element e, bool printOnScreen);
+	void addElement(Vector2 v, Element e, bool printOnScreen);
+	void putRandomCherry(bool printOnScreen);
+	void printElement(int i, int j);
+	void printElement(Vector2 v);
+	void print();
 	std::string toString();
 };
 

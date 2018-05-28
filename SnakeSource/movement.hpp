@@ -20,6 +20,7 @@ class Movement {
 	static const char down;
 	static const char left;
 public:
+	static bool isMovement(char c);
 	static Direction CharToDirection(char c);
 	static Vector2 DirectionToVector2(Direction d);
 	static Direction Vector2ToDirection(Vector2 v);
