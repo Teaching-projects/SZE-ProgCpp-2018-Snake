@@ -26,7 +26,25 @@ void ChangeColor(Element e)
 #elif _WIN32
 void ChangeColor(Element e)
 {
-	std::cout << "Not implemented exception." << std::endl;
+	switch (e) {
+	case Element::WALL:
+		Change16Color(9);
+		break;
+	case Element::SNAKE_HEAD:
+		Change16Color(10);
+		break;
+	case Element::SNAKE_BODY:
+		Change16Color(2);
+		break;
+	case Element::SNAKE_TAIL:
+		Change16Color(6);
+		break;
+	case Element::CHERRY:
+		Change16Color(12);
+		break;
+	default:
+		break;
+	}
 }
 #else
 void ChangeColor(Element e) {}
@@ -76,7 +94,7 @@ void Map::putRandomCherryBigSnake(bool printOnScreen)
 	addElement(xVector[rx], yVector[rx][ry], Element::CHERRY, printOnScreen);
 }
 
-Map::Map(int n, int m) : x(n), y(m)
+Map::Map(int n, int m, int _offset) : x(n), y(m), offset(_offset)
 {
 	// Allocating the map.
 	map = new char*[x];
@@ -87,6 +105,8 @@ Map::Map(int n, int m) : x(n), y(m)
 	// Set each element to the default value.
 	clearMap();
 }
+
+Map::Map(int n, int m) : Map(n, m, 0) {}
 
 Map::~Map()
 {
@@ -190,14 +210,21 @@ void Map::putRandomCherry(bool printOnScreen)
 	}
 }
 
+void Map::updateScore(int score)
+{
+	CursorToPosition(offset, y + 2);
+	std::cout << score;
+	std::cout.flush();
+}
+
 
 void Map::printElement(int i, int j)
 {
 	ChangeColor((Element)map[i][j]);
-	CursorToPosition(i, j);
+	CursorToPosition(i + offset, j);
 	std::cout << map[i][j];
 	ResetText();
-	CursorToPosition(x, y);
+	CursorToPosition(x + offset, y);
 	std::cout.flush();
 }
 
@@ -226,14 +253,4 @@ std::string Map::toString()
 		oss << '\n';
 	}
 	return oss.str();
-	/*
-	std::ostringstream oss;
-	for (int i = 0; i < y; i++) {
-		for (int j = 0; j < x; j++) {
-			oss << map[j][i];
-		}
-		oss << '\n';
-	}
-	return oss.str();
-	*/
 }

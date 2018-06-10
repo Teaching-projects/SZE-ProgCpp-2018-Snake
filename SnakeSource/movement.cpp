@@ -1,22 +1,39 @@
 #include "movement.hpp"
 
-const char Movement::up = 'w';
-const char Movement::right = 'd';
-const char Movement::down = 's';
-const char Movement::left = 'a';
+
+Movement::Movement(std::string chars) :
+	up(chars[0]), left(chars[1]),
+	down(chars[2]), right(chars[3]) {}
 
 bool Movement::isMovement(char c)
 {
-	if(c == Movement::up || c == Movement::right ||
-		c == Movement::down || c == Movement::left)
+	if(c == up || c == right ||
+		c == down || c == left)
 	{
 		return true;
 	}
 	return false;
 }
 
-Direction Movement::CharToDirection(char c)
+Direction Movement::CharToDirection(char c) const
 {
+	if (c == up) {
+		return Direction::UP;
+	}
+	else if (c == left) {
+		return Direction::LEFT;
+	}
+	else if (c == down) {
+		return Direction::DOWN;
+	}
+	else if (c == right) {
+		return Direction::RIGHT;
+	}
+	else {
+		return Direction::NONE;
+	}
+
+	/*
 	switch (c) {
 	case up:
 		return Direction::UP;
@@ -29,6 +46,7 @@ Direction Movement::CharToDirection(char c)
 	default:
 		return Direction::NONE;
 	}
+	*/
 }
 
 Vector2 Movement::DirectionToVector2(Direction d)

@@ -40,13 +40,13 @@ void ResetText(){
 	std::cout << "\033[0m";
 }
 
-int kbhit(){
+int _kbhit(){
 	int bytesWaiting;
 	ioctl(0, FIONREAD, &bytesWaiting);
 	return bytesWaiting;
 }
 
-char getch(){
+char _getch(){
 	char c;
 	c = getchar();
 	return c;
