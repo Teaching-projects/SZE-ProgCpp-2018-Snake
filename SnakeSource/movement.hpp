@@ -1,6 +1,8 @@
 #ifndef __ROTATION_HPP__
 #define __ROTATION_HPP__
 
+#include <string>
+
 #include "vector2.hpp"
 
 enum class Direction {
@@ -12,16 +14,18 @@ enum class Direction {
 };
 
 class Movement {
-	Movement() {}
 
 	// Buttons pressed for movement.
-	static const char up;
-	static const char right;
-	static const char down;
-	static const char left;
+
+	const char up;
+	const char left;
+	const char down;
+	const char right;
 public:
-	static bool isMovement(char c);
-	static Direction CharToDirection(char c);
+	Movement(std::string chars);
+
+	bool isMovement(char c);
+	Direction CharToDirection(char c) const;
 	static Vector2 DirectionToVector2(Direction d);
 	static Direction Vector2ToDirection(Vector2 v);
 	static Direction OppositeDirection(Direction d);

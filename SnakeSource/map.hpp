@@ -1,6 +1,7 @@
 #ifndef __MAP_HPP__
 #define __MAP_HPP__
 
+#include <iostream>
 #include <sstream>
 #include <random>
 #include <ctime>
@@ -10,7 +11,8 @@
 
 #ifdef __linux__
 #include "linuxterminalhandler.hpp"
-
+#elif _WIN32
+#include "windowsterminalhandler.hpp"
 #endif
 /*
 #define MAP_EMPTY ' '
@@ -41,9 +43,11 @@ class Map {
 	char **map;
 	int wallCount;
 	int snakeSize;
+	int offset;
 	std::mt19937 rng;
 	void putRandomCherryBigSnake(bool printOnScreen);
 public:
+	Map(int n, int m, int offset);
 	Map(int n, int m);
 	~Map();
 	char get(int i, int j);
@@ -56,6 +60,7 @@ public:
 	void addElement(int i, int j, Element e, bool printOnScreen);
 	void addElement(Vector2 v, Element e, bool printOnScreen);
 	void putRandomCherry(bool printOnScreen);
+	void updateScore(int score);
 	void printElement(int i, int j);
 	void printElement(Vector2 v);
 	void print();

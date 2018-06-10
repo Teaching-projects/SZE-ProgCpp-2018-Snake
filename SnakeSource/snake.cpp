@@ -9,12 +9,14 @@ void Snake::makeMove(bool destroyTail)
 }
 
 
-Snake::Snake(int x, int y, Map& map) : habitat(map)
+Snake::Snake(int x, int y, Map& map, std::string _name, std::string _movement) : habitat(map), name(_name), movement(_movement)
 {
 	snake.clear();
 	addNewHead(Vector2(x, y) + Vector2::up);
 	addNewHead(x, y);
 	dir = Direction::DOWN;
+	score = 0;
+	scoreIncrease = 10;
 	habitat.increaseSnakeSizeByOne();
 	habitat.increaseSnakeSizeByOne();
 }
@@ -45,6 +47,11 @@ Vector2 Snake::getHead()
 Vector2 Snake::getTail()
 {
 	return get(snake.size() - 1);
+}
+
+std::string Snake::getName()
+{
+	return name;
 }
 
 Direction Snake::getDirection()
@@ -94,6 +101,10 @@ void Snake::makeMoveOnMap(bool printOnScreen)
 		habitat.addElement(getHead(), Element::SNAKE_BODY, printOnScreen);
 		makeMove(false);
 		habitat.increaseSnakeSizeByOne();
+		// The score is static, might change later.
+		score += scoreIncrease;
+		scoreIncrease = 10;
+		habitat.updateScore(score);
 
 		// Placing a new cherry.
 		habitat.putRandomCherry(printOnScreen);
@@ -107,6 +118,8 @@ void Snake::makeMoveOnMap(bool printOnScreen)
 		}
 		makeMove(true);
 		habitat.addElement(getTail(), Element::SNAKE_TAIL, printOnScreen);
+
+		(scoreIncrease > 1) && (scoreIncrease--);
 	}
 }
 

@@ -13,17 +13,23 @@ class Snake {
 	Direction dir;
 	Map& habitat;
 	bool dead;
+	int score;
+	int scoreIncrease;
+	std::string name;
+
 	void makeMove(bool destroyTail);
 	void addNewHead(int x, int y);
 	void addNewHead(Vector2 v);
 	void deleteTail();
 public:
-	Snake(int x, int y, Map& map);
+	Snake(int x, int y, Map& map, std::string _name, std::string _movement);
 	~Snake();
 	int size();
+	Movement movement;
 	Vector2 get(int i);
 	Vector2 getHead();
 	Vector2 getTail();
+	std::string getName();
 	Direction getDirection();
 	bool isAlive();
 

@@ -23,7 +23,7 @@ void CursorToPosition(int x, int y);
 void ChangeTrueColor(int r, int g, int b);
 void ResetText();
 
-int kbhit();
-char getch();
+int _kbhit();
+char _getch();
 
 #endif
