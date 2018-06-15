@@ -9,17 +9,20 @@ void Snake::makeMove(bool destroyTail)
 }
 
 
-Snake::Snake(int x, int y, Map& map, std::string _name, std::string _movement) : habitat(map), name(_name), movement(_movement)
+Snake::Snake(int x, int y, Map& map, std::string _name, std::string _movement, int _scoreOffset) : habitat(map), name(_name), movement(_movement)
 {
 	snake.clear();
 	addNewHead(Vector2(x, y) + Vector2::up);
 	addNewHead(x, y);
 	dir = Direction::DOWN;
 	score = 0;
-	scoreIncrease = 10;
+	scoreIncrease = habitat.getMaxScore();
+	scoreOffset = _scoreOffset;
 	habitat.increaseSnakeSizeByOne();
 	habitat.increaseSnakeSizeByOne();
 }
+
+Snake::Snake(int x, int y, Map& map, std::string _name, std::string _movement) : Snake(x, y, map, _name, _movement, 0) {}
 
 Snake::~Snake()
 {
@@ -103,19 +106,25 @@ void Snake::makeMoveOnMap(bool printOnScreen)
 		habitat.increaseSnakeSizeByOne();
 		// The score is static, might change later.
 		score += scoreIncrease;
-		scoreIncrease = 10;
-		habitat.updateScore(score);
+		scoreIncrease = habitat.getMaxScore();
+		habitat.updateScore(score, scoreOffset);
 
 		// Placing a new cherry.
 		habitat.putRandomCherry(printOnScreen);
 	}
 	else
 	{
+		if((Element)habitat.get(getTail()) != Element::SNAKE_HEAD){
+				habitat.addElement(getTail(), Element::EMPTY, printOnScreen);
+			}
 		habitat.addElement(nextSpot, Element::SNAKE_HEAD, printOnScreen);
 		habitat.addElement(getHead(), Element::SNAKE_BODY, printOnScreen);
+		/*
 		if (nextElement != Element::SNAKE_TAIL) {
-			habitat.addElement(getTail(), Element::EMPTY, printOnScreen);
-		}
+			if((Element)habitat.get(getTail()) == Element::SNAKE_TAIL){
+				habitat.addElement(getTail(), Element::EMPTY, printOnScreen);
+			}
+		}*/
 		makeMove(true);
 		habitat.addElement(getTail(), Element::SNAKE_TAIL, printOnScreen);
 

@@ -44,6 +44,7 @@ class Map {
 	int wallCount;
 	int snakeSize;
 	int offset;
+	int maxScore;
 	std::mt19937 rng;
 	void putRandomCherryBigSnake(bool printOnScreen);
 public:
@@ -53,6 +54,7 @@ public:
 	char get(int i, int j);
 	char get(Vector2 v);
 	int countEmpty();
+	int getMaxScore();
 	void clearMap();
 	void createBorder(int edge);
 	void createBorder();
@@ -60,7 +62,7 @@ public:
 	void addElement(int i, int j, Element e, bool printOnScreen);
 	void addElement(Vector2 v, Element e, bool printOnScreen);
 	void putRandomCherry(bool printOnScreen);
-	void updateScore(int score);
+	void updateScore(int score, int scoreOffset);
 	void printElement(int i, int j);
 	void printElement(Vector2 v);
 	void print();
