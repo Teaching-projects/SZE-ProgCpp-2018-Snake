@@ -29,24 +29,41 @@ int main() {
 	clock_t coolDown = COOLDOWN_SECONDS * CLOCKS_PER_SEC;
 
 	int x, y, playerCount;
+	bool oneMap = false;
 	x = y = 0;
 	playerCount = -1;
 	std::string name = "AnonymuS";
 	std::string movement = "wasd";
 
-	std::cout << "Number of players? ";
+	std::cout << "Number of players? >> ";
 	std::cin >> playerCount;
 
 	(playerCount < 1) && (playerCount = 1);
+
+	if(playerCount > 1){
+		std::string input = "no";
+		std::cout << "All snake on one map? ([y]es, [n]o) >> ";
+		std::cin >> input;
+		if(input[0] == 'y' || input[0] == 'Y'){
+			oneMap = true;
+		}
+	}
 
 	std::cout << "Size of the map [x y] >> ";
 	std::cin >> x >> y;
 
 	(x < 6) && (x = 6);
 	(y < 6) && (y = 6);
-
+	
 	std::vector<Map*> maps;
 	std::vector<Snake*> snakes;
+
+	if(oneMap){
+		Map *map = new Map(x, y);
+		maps.push_back(map);
+
+		maps[0]->createBorder();
+	}
 
 	// No error handling on bad input, be careful ;)
 	for (int i = 0; i < playerCount; i++) {
@@ -56,21 +73,35 @@ int main() {
 		std::cin >> movement;
 		std::cout.flush();
 
-		Map *map = new Map(x, y, i * (x + 3));
-		maps.push_back(map);
-		Snake *snake = new Snake(x / 2, y / 2, *maps[i], name, movement);
+		Snake *snake;
+
+		if(!oneMap){
+			Map *map = new Map(x, y, i * (x + 3));
+			maps.push_back(map);
+			snake = new Snake(x / 2, y / 2, *maps[(oneMap ? 0 : i)], name, movement);
+		} else {
+			snake = new Snake((x / /*(playerCount + 1)) * (i + 1)*/ 2), (y / (playerCount + 1)) * (i + 1), *maps[(oneMap ? 0 : i)], name, movement, 3 * i);
+		}
+	
 		snakes.push_back(snake);
 
-		maps[i]->createBorder();
+		if(!oneMap){
+			maps[i]->createBorder();
+		}
 		snakes[i]->paintOnMap();
-		maps[i]->putRandomCherry(false);
+		if(!oneMap){
+			maps[i]->putRandomCherry(false);
+		}
+	}
+
+	if(oneMap){
+		maps[0]->putRandomCherry(false);
 	}
 
 	std::vector<char> dir;
 	system(CLEAR_SCREEN_STRING);
 	for (int i = 0; i < maps.size(); i++) {
 		maps[i]->print();
-		maps[i]->updateScore(0);
 		dir.push_back(' ');
 	}
 	
@@ -101,7 +132,7 @@ int main() {
 	TerminalHandler::resetNoBuffering();
 #endif
 
-	CursorToPosition(x + 6, y + 6);
+	CursorToPosition(x + 4, y + 4);
 	Snake* snake = whoWon(maps, snakes);
 	if(snake != nullptr) {
 		std::cout << snake->getName() << " has filled the map :)" << std::endl;
@@ -122,9 +153,9 @@ int main() {
 		delete snakes[i];
 	}
 
-	std::cin.clear();
-	std::cin.ignore(69, '\n');
-	std::cin >> c;
+	int offSet = oneMap ? 1 : playerCount;
+	CursorToPosition(offSet * x + offSet * 6, offSet * y + offSet * 6);
+	std::cout << std::endl;
 	return 0;
 }
 
@@ -162,3 +193,14 @@ Snake* whoLost(std::vector<Snake*> snakes)
 	}
 	return nullptr;
 }
+
+/*
+// Solo test input for 2 player.
+2
+yes
+20 20
+player1
+wasd
+player2
+ijkl
+*/

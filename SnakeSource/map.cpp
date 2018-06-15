@@ -102,6 +102,8 @@ Map::Map(int n, int m, int _offset) : x(n), y(m), offset(_offset)
 		map[i] = new char[y];
 	}
 
+	maxScore = x + y;
+
 	// Set each element to the default value.
 	clearMap();
 }
@@ -134,6 +136,11 @@ char Map::get(Vector2 v)
 int Map::countEmpty()
 {
 	return x * y - wallCount - snakeSize;
+}
+
+int Map::getMaxScore()
+{
+	return maxScore;
 }
 
 void Map::clearMap()
@@ -210,9 +217,9 @@ void Map::putRandomCherry(bool printOnScreen)
 	}
 }
 
-void Map::updateScore(int score)
+void Map::updateScore(int score, int scoreOffset)
 {
-	CursorToPosition(offset, y + 2);
+	CursorToPosition(offset + scoreOffset, y + 2);
 	std::cout << score;
 	std::cout.flush();
 }

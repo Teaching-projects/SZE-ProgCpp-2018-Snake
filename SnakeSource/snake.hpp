@@ -15,6 +15,7 @@ class Snake {
 	bool dead;
 	int score;
 	int scoreIncrease;
+	int scoreOffset;
 	std::string name;
 
 	void makeMove(bool destroyTail);
@@ -23,6 +24,7 @@ class Snake {
 	void deleteTail();
 public:
 	Snake(int x, int y, Map& map, std::string _name, std::string _movement);
+	Snake(int x, int y, Map& map, std::string _name, std::string _movement, int _scoreOffset);
 	~Snake();
 	int size();
 	Movement movement;
